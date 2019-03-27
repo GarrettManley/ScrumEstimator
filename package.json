@@ -8,6 +8,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
+    "deploy": "git checkout develop && git fetch && git pull && npm version patch",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
