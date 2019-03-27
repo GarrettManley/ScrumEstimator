@@ -8,6 +8,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
+    "deploy": "git checkout develop && git fetch origin && git pull && npm version patch && git push && git push --tags && git checkout master && git pull && git merge -m 'Automated merge to master on deployment' develop && git push && git push && ng build --prod && firebase deploy && git push && git checkout develop && git fetch origin && echo 'Successfully deployed the latest in develop to production'",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
