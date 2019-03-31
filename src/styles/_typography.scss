@@ -1,0 +1,17 @@
+@import "./colors";
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300');
+
+@mixin font-plex {
+  font-family: 'IBM Plex Sans',
+    sans-serif;
+  font-weight: 300;
+}
+
+* {
+  color: $color-light;
+  @include font-plex();
+
+  h1 {
+    margin: 0;
+  }
+}

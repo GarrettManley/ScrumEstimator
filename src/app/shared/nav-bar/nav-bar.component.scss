@@ -1,0 +1,13 @@
+@import "../../../styles/variables";
+
+.nav_bar {
+  background: $color-primary-green;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: $padding-body-left;
+  padding-right: $padding-body-right;
+
+  .nav_bar-title {
+    font-size: 2rem;
+  }
+}
