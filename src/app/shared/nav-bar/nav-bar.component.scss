@@ -1,4 +1,4 @@
-@import "../../../styles/variables";
+@import "../../../styles/styles.scss";
 
 .nav_bar {
   background: $color-primary-green;
@@ -7,7 +7,9 @@
   padding-left: $padding-body-left;
   padding-right: $padding-body-right;
 
+  @include shadow();
+
   .nav_bar-title {
-    font-size: 2rem;
+    @include font-large();
   }
 }
