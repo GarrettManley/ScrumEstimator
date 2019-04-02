@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'prft-est-root',
+  selector: 'scrum-est-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })

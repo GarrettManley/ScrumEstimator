@@ -7,7 +7,7 @@
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
-      "prefix": "prft-est",
+      "prefix": "scrum-est",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
