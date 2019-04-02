@@ -1,0 +1,33 @@
+@import "../../../styles/styles.scss";
+
+.card_group {
+  // temp
+  margin-left: $padding-body-left;
+  margin-right: $padding-body-right;
+  //
+  margin-top: 3rem;
+
+  &-title {
+    background: $color-primary;
+    padding: 1rem;
+    border-radius: $dimen-card-corner;
+    display: inline-block;
+    margin-bottom: -2rem;
+    margin-left: -0.25rem;
+
+    @include shadow-hover();
+    @include font-normal();
+
+    &-text {}
+  }
+
+  &-body {
+    background: $color-white;
+    padding: 3rem 2rem 3rem 2rem;
+    border-radius: 0 $dimen-card-corner $dimen-card-corner;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    @include shadow();
+  }
+}

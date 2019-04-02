@@ -1,2 +1,6 @@
 <scrum-est-nav-bar></scrum-est-nav-bar>
+<scrum-est-card-group [title]="'Vote for a story point estimate'">
+  <scrum-est-card *ngFor="let card of cards"
+                  [cardModel]="card"></scrum-est-card>
+</scrum-est-card-group>
 <router-outlet></router-outlet>

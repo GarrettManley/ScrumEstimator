@@ -1,0 +1,58 @@
+@import '../../../styles/styles.scss';
+
+.card {
+  padding: 1rem;
+  margin: 0.5rem;
+  border-radius: $dimen-card-corner;
+  background: $color-default_background;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 6rem;
+  height: 8rem;
+
+  @include shadow();
+
+  &_type- {
+    &display {}
+
+    &interactive {
+      background: $color-secondary;
+      cursor: pointer;
+
+      &:hover {
+        @include shadow-hover();
+        background: $color-primary-hover;
+        margin-top: 0.25rem;
+        margin-bottom: 0.75rem;
+      }
+
+      &.selected {
+        background: $color-primary;
+        cursor: pointer;
+
+        &:hover {
+          @include shadow-hover();
+          background: $color-secondary-hover;
+          margin-top: 0.25rem;
+          margin-bottom: 0.75rem;
+        }
+
+      }
+    }
+
+    &display {
+      &.selected {
+        background: $color-primary-hover
+      }
+    }
+  }
+
+  &-num {
+    color: $color-light;
+    font-size: 4rem;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+  }
+}

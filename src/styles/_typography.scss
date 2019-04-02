@@ -1,5 +1,5 @@
 @import "./colors";
-@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300');
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300,400');
 
 $font-size-large: 2rem;
 $font-size-normal: 1rem;
@@ -25,11 +25,9 @@ $font-size-small: 0.5rem;
 
 * {
   color: $color-light;
-  @include font-plex();
+  margin: 0;
 
-  h1 {
-    margin: 0;
-  }
+  @include font-plex();
 
   .font-large {
     @include font-large();

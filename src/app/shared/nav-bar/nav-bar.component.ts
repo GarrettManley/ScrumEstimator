@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { CardTypes } from '../models/card/card-types.enum';
 
 @Component({
-  selector: 'prft-est-nav-bar',
+  selector: 'scrum-est-nav-bar',
   templateUrl: './nav-bar.component.html',
-  styleUrls: ['./nav-bar.component.scss']
+  styleUrls: ['./nav-bar.component.scss'],
 })
 export class NavBarComponent implements OnInit {
+  cardTypeInteractive: CardTypes = CardTypes.interactive;
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }
