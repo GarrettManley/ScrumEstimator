@@ -9,9 +9,9 @@ import { CardTypes } from 'src/app/shared/models/card/card-types.enum';
   styleUrls: ['./voting-room.component.scss'],
 })
 export class VotingRoomComponent implements OnInit {
-  cardGroup: SelectableGroup;
-
-  cards: Card[] = [
+  // voting cards
+  votingCardGroup: SelectableGroup;
+  votingCards: Card[] = [
     new Card('0', CardTypes.display),
     new Card('1', CardTypes.interactive),
     new Card('2', CardTypes.interactive),
@@ -22,11 +22,8 @@ export class VotingRoomComponent implements OnInit {
     new Card('?', CardTypes.interactive),
   ];
 
-  constructor() {
-    const title = 'Vote for a story point estimate';
-    this.cardGroup = new SelectableGroup(this.cards, this.cards[1].id, title);
-    this.cardGroup.active = true;
+  ngOnInit() {
+    const votingCardGroupTitle = 'Vote for a story point estimate';
+    this.votingCardGroup = new SelectableGroup(this.votingCards, votingCardGroupTitle);
   }
-
-  ngOnInit() {}
 }

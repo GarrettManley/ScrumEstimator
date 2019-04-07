@@ -7,14 +7,14 @@ export class SelectableGroup {
 
   public selectedItem: ISelectable;
 
-  constructor(group?: ISelectable[], selectedItemID?: string, title: string = 'SelectableGroup Title') {
+  constructor(group?: ISelectable[], title: string = 'SelectableGroup Title', selectedItemID?: string) {
     this.title = title;
     this.group = group;
     this.setSelected(selectedItemID);
   }
 
   public setSelected(id: string) {
-    if (this.group !== undefined) {
+    if (this.group !== undefined && id !== undefined) {
       if (this.getItemByID(id).interactive) {
         this.group.forEach(item => {
           if ((id !== undefined && item.id) === id) {
