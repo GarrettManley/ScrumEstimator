@@ -1,6 +1,6 @@
 <div [className]="cardModel.cardType"
-     id="{{ cardModel.id }}"
-     (click)="cardModel.clickCard()">
+     id="{{ cardModel.id }}">
 
-  <div class="card-num">{{ cardModel.value }}</div>
+  <div class="card-num"
+       *ngIf="cardModel.displayValue">{{ cardModel.value }}</div>
 </div>

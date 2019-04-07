@@ -19,12 +19,12 @@
     &interactive {
       background: $color-secondary;
       cursor: pointer;
+      transition: all 0.15s ease-in-out;
 
       &:hover {
         @include shadow-hover();
         background: $color-primary-hover;
-        margin-top: 0.25rem;
-        margin-bottom: 0.75rem;
+        transform: scale(1.05);
       }
 
       &.selected {
@@ -34,14 +34,24 @@
         &:hover {
           @include shadow-hover();
           background: $color-secondary-hover;
-          margin-top: 0.25rem;
-          margin-bottom: 0.75rem;
+          transform: scale(1.05);
         }
 
       }
     }
 
     &display {
+      background: $color-secondary-hover;
+
+      &-shown {
+        background: $color-secondary;
+
+        &.selected {
+          background: $color-primary;
+        }
+
+      }
+
       &.selected {
         background: $color-primary-hover
       }

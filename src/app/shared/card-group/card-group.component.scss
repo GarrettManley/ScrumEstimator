@@ -10,15 +10,14 @@
   &-title {
     background: $color-primary;
     padding: 1rem;
-    border-radius: $dimen-card-corner;
+    border-radius: $dimen-card-corner $dimen-card-corner 0 0;
     display: inline-block;
-    margin-bottom: -2rem;
-    margin-left: -0.25rem;
 
-    @include shadow-hover();
     @include font-normal();
 
-    &-text {}
+    &.active {
+      @include shadow-pulse();
+    }
   }
 
   &-body {
