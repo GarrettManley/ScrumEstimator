@@ -1,0 +1,26 @@
+@import '../../../styles/styles.scss';
+
+.footer {
+  background: $color-primary;
+  padding-left: $padding-body-left;
+  padding-right: $padding-body-right;
+
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+
+  .col {
+    padding: 1rem 0;
+    text-align: center;
+
+    width: 30%;
+
+    .heading {
+      @include font-large();
+    }
+
+    .body {
+      @include font-normal();
+    }
+  }
+}
