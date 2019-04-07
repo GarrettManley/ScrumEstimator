@@ -50,8 +50,8 @@ body {
   background: $color-default_background;
   margin: 0;
 
-  router-outlet {
-    padding-left: $padding-body-left;
-    padding-right: $padding-body-right;
+  .page {
+    margin-left: $padding-body-left;
+    margin-right: $padding-body-right;
   }
 }

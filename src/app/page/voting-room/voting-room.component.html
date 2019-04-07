@@ -1,0 +1,7 @@
+<scrum-est-base-page>
+  <scrum-est-card-group [cardGroup]="cardGroup">
+    <scrum-est-card *ngFor="let card of cardGroup.group"
+                    [cardModel]="card"
+                    (click)="cardGroup.setSelected(card.id)"></scrum-est-card>
+  </scrum-est-card-group>
+</scrum-est-base-page>
