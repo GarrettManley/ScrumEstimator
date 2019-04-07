@@ -23,6 +23,10 @@
 
     .body {
       @include font-normal();
+
+      a {
+        @include font-normal();
+      }
     }
   }
 }
