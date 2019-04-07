@@ -11,7 +11,10 @@
     border-radius: $dimen-card-corner $dimen-card-corner 0 0;
     display: inline-block;
 
-    @include font-normal();
+    h2 {
+      @include font-normal();
+
+    }
 
     &.active {
       @include shadow-pulse();
