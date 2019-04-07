@@ -8,6 +8,6 @@ import { ButtonComponent } from './button/button.component';
 @NgModule({
   declarations: [NavBarComponent, CardGroupComponent, CardComponent, ButtonComponent],
   imports: [CommonModule],
-  exports: [NavBarComponent, CardGroupComponent, CardComponent],
+  exports: [NavBarComponent, CardGroupComponent, CardComponent, ButtonComponent],
 })
 export class SharedModule {}

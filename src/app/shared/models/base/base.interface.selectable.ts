@@ -3,5 +3,4 @@ export interface ISelectable {
   interactive: boolean;
   id: string;
   value?: string;
-  displayValue: boolean;
 }

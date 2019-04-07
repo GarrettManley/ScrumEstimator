@@ -1,4 +1,6 @@
-<div>
+<div class="btn"
+     [ngClass]="{'selected': buttonModel.selected}"
+     id="{{ buttonModel.id }}">
 
-  <div>Button</div>
+  <div class="btn-title">{{buttonModel.value}}</div>
 </div>
