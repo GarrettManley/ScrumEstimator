@@ -3,6 +3,8 @@
 .card_group {
   margin-top: 3rem;
 
+  @include fade-in();
+
   &-title {
     background: $color-primary;
     padding: 1rem;

@@ -7,6 +7,7 @@
   padding-left: $padding-body-left;
   padding-right: $padding-body-right;
 
+  @include slide-in-from-top();
   @include shadow();
 
   .nav_bar-title {

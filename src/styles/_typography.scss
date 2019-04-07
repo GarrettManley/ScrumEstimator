@@ -26,6 +26,7 @@ $font-size-small: 0.5rem;
 * {
   color: $color-light;
   margin: 0;
+  font-size: 14px;
 
   @include font-plex();
 
@@ -43,9 +44,5 @@ $font-size-small: 0.5rem;
 
   a {
     text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
   }
 }
