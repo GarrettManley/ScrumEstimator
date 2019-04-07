@@ -1,0 +1,20 @@
+// Colors
+$color-green: rgb(0, 150, 136);
+$color-green-light: rgb(102, 192, 184);
+
+$color-gray: rgb(96, 125, 139);
+$color-gray-light: rgb(144, 164, 174);
+
+$color-white: rgb(255, 255, 255);
+$color-black: rgb(0, 0, 0);
+$color-light: rgb(238, 238, 238);
+
+$color-shadow: rgba(0, 0, 0, 0.45);
+
+// Color Aliases
+$color-primary: $color-green;
+$color-primary-hover: $color-green-light;
+$color-secondary: $color-gray;
+$color-secondary-hover: $color-gray-light;
+
+$color-default_background: $color-light;

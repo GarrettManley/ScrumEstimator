@@ -1,0 +1,8 @@
+ @import '../../../styles/styles.scss';
+
+ .page {
+   margin-left: $padding-body-left;
+   margin-right: $padding-body-right;
+   margin-bottom: 3rem;
+   min-height: 100vh;
+ }

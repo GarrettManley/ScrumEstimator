@@ -1,0 +1,39 @@
+@import '../../../styles/styles.scss';
+
+.btn {
+  padding: 1rem;
+  margin: 0.5rem;
+  border-radius: $dimen-card-corner;
+  background: $color-secondary;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+
+  @include shadow();
+
+  &:hover {
+    @include shadow-hover();
+    background: $color-primary-hover;
+    transform: scale(1.05);
+  }
+
+  &.selected {
+    background: $color-primary;
+    cursor: pointer;
+
+    &:hover {
+      @include shadow-hover();
+      background: $color-secondary-hover;
+      transform: scale(1.05);
+    }
+
+  }
+
+  &-title {
+    @include font-large();
+    text-align: center;
+    vertical-align: middle;
+  }
+}

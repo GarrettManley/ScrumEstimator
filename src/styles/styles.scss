@@ -1,0 +1,53 @@
+/* You can add global styles to this file, and also import other style files */
+@import "./variables";
+
+@mixin shadow {
+  box-shadow: 0 0.25rem 0.5rem 0 $color-shadow;
+}
+
+@mixin shadow-inverted {
+  box-shadow: inset 0 0.25rem 0.5rem 0 $color-shadow;
+}
+
+@mixin shadow-hover {
+  box-shadow: 0 0.5rem 1rem 0 $color-shadow;
+}
+
+@mixin shadow-pulse {
+  $duration: 1s;
+  $rotation: 3deg;
+  $y-translation: -0.5rem;
+  $scale: 1.05;
+
+  animation: shadow-pulse $duration infinite;
+
+  @keyframes shadow-pulse {
+    0% {
+      // @include shadow-inverted();
+    }
+
+    25% {
+      transform: rotate($rotation);
+    }
+
+    50% {
+      @include shadow-hover();
+      transform: scale($scale) translateY($y-translation);
+    }
+
+
+    75% {
+      transform: rotate(-$rotation);
+    }
+
+    100% {
+      // @include shadow-inverted();
+    }
+  }
+}
+
+body {
+  background: $color-default_background;
+  margin: 0;
+
+}
