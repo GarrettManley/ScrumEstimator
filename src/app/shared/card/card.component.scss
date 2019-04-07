@@ -1,0 +1,68 @@
+@import '../../../styles/styles.scss';
+
+.card {
+  padding: 1rem;
+  margin: 0.5rem;
+  border-radius: $dimen-card-corner;
+  background: $color-default_background;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 6rem;
+  height: 8rem;
+
+  @include shadow();
+
+  &_type- {
+    &display {}
+
+    &interactive {
+      background: $color-secondary;
+      cursor: pointer;
+      transition: all 0.15s ease-in-out;
+
+      &:hover {
+        @include shadow-hover();
+        background: $color-primary-hover;
+        transform: scale(1.05);
+      }
+
+      &.selected {
+        background: $color-primary;
+        cursor: pointer;
+
+        &:hover {
+          @include shadow-hover();
+          background: $color-secondary-hover;
+          transform: scale(1.05);
+        }
+
+      }
+    }
+
+    &display {
+      background: $color-secondary-hover;
+
+      &-shown {
+        background: $color-secondary;
+
+        &.selected {
+          background: $color-primary;
+        }
+
+      }
+
+      &.selected {
+        background: $color-primary-hover
+      }
+    }
+  }
+
+  &-num {
+    color: $color-light;
+    font-size: 4rem;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+  }
+}

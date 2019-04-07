@@ -6,6 +6,6 @@ export class AppPage {
   }
 
   getTitleText() {
-    return element(by.css('prft-est-root h1')).getText() as Promise<string>;
+    return element(by.css('scrum-est-root h1')).getText() as Promise<string>;
   }
 }

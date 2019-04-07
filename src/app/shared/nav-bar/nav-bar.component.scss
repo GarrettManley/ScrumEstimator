@@ -1,0 +1,15 @@
+@import "../../../styles/styles.scss";
+
+.nav_bar {
+  background: $color-primary;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: $padding-body-left;
+  padding-right: $padding-body-right;
+
+  @include shadow();
+
+  .nav_bar-title {
+    @include font-large();
+  }
+}
