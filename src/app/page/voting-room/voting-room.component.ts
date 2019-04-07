@@ -13,6 +13,7 @@ export class VotingRoomComponent implements OnInit {
   // voting group
   votingGroup: SelectableGroup;
   votingGroups: Button[] = [new Button('Developers'), new Button('QA'), new Button('Designers')];
+
   // voting cards
   votingCardGroup: SelectableGroup;
   votingCards: Card[] = [

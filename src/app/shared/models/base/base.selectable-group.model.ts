@@ -3,7 +3,7 @@ import { ISelectable } from './base.interface.selectable';
 export class SelectableGroup {
   public group: ISelectable[];
   public title: string;
-  public active: boolean;
+  public active = true;
 
   public selectedItem: ISelectable;
 
@@ -20,6 +20,7 @@ export class SelectableGroup {
           if ((id !== undefined && item.id) === id) {
             item.selected = true;
             this.selectedItem = item;
+            this.active = false;
           } else {
             item.selected = false;
           }
