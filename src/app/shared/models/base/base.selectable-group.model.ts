@@ -31,6 +31,7 @@ export class SelectableGroup {
 
   private getItemByID(id: string): ISelectable {
     let item: ISelectable;
+
     this.group.forEach(i => {
       if (i.id === id) {
         item = i;

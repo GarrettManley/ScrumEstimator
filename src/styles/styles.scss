@@ -13,6 +13,29 @@
   box-shadow: 0 0.5rem 1rem 0 $color-shadow;
 }
 
+@mixin slide-in-from-top() {
+  animation: slide-down 1s;
+
+  @keyframes slide-down {
+    0% {
+      margin-left: -100rem;
+      margin-top: -100rem;
+    }
+  }
+}
+
+@mixin fade-in {
+  animation: fade-in 1s;
+
+  @keyframes fade-in {
+    0% {
+      transform: scale(0.5);
+      opacity: 0;
+    }
+  }
+
+}
+
 @mixin shadow-pulse {
   $duration: 1s;
   $rotation: 3deg;
