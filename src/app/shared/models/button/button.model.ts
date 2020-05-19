@@ -1,5 +1,5 @@
-import * as nanoid from 'nanoid';
-import { ISelectable } from '../base/base.interface.selectable';
+import * as nanoid from "nanoid";
+import { ISelectable } from "../base/base.interface.selectable";
 
 export class Button implements ISelectable {
   public id: string;
