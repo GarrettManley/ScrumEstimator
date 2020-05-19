@@ -2,8 +2,8 @@
 name: User Story
 about: Issue Template for User Story with Tasks
 title: ''
-labels: ''
-assignees: ''
+labels: User Story
+assignees: GarrettManley
 
 ---
 
