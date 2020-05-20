@@ -1,4 +1,4 @@
-const packageInfo = require('../../package.json');
+const packageInfo = require("../../package.json");
 
 export const environment = {
   production: true,

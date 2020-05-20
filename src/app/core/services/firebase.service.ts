@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import * as firebase from 'firebase';
+import { Injectable } from "@angular/core";
+import * as firebase from "firebase";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class FirebaseService {
   constructor() {
@@ -11,8 +11,8 @@ export class FirebaseService {
 
   private initializeFirebaseApp() {
     const config = {
-      authDomain: 'scrumestimator.firebaseapp.com',
-      databaseURL: 'https://scrumestimator.firebaseio.com',
+      authDomain: "scrumestimator.firebaseapp.com",
+      databaseURL: "https://scrumestimator.firebaseio.com",
     };
     firebase.initializeApp(config);
   }
