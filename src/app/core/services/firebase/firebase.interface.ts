@@ -1,5 +1,6 @@
+import * as firebase from "firebase";
 import App = firebase.app.App;
-import Database = firebase.database.Database;
+import Database = firebase.firestore.Firestore;
 
 export interface IFirebaseService {
   App: App;
