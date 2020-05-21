@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { DatabaseService } from "../database/database.service";
 
 @Injectable({
@@ -13,6 +13,7 @@ export class VotingRoomService {
 
   constructor(
     private _route: ActivatedRoute,
+    private _router: Router,
     private _database: DatabaseService
   ) {}
 
@@ -44,13 +45,11 @@ export class VotingRoomService {
   }
 
   private async getAllVotingRoomIds() {
-    await this._database
-      .getCollection(this.votingRoomPath)
-      .then((collection) => {
-        collection.forEach((doc) => {
-          this.votingRooms.push(doc.id);
-        });
-      });
+    const collection = await this._database.getCollection(this.votingRoomPath);
+
+    collection.forEach((doc) => {
+      this.votingRooms.push(doc.id);
+    });
 
     return this.votingRooms;
   }
@@ -59,7 +58,14 @@ export class VotingRoomService {
     this.votingRoomId = await this._database.createNewDocument(
       this.votingRoomPath
     );
-
+    this.writePathForNewVotingRoom();
     console.log(`new voting room created: ${this.votingRoomId}`);
+  }
+
+  private writePathForNewVotingRoom() {
+    this._router.navigate(["/voting-room"], {
+      queryParams: { id: this.votingRoomId },
+      queryParamsHandling: "merge",
+    });
   }
 }

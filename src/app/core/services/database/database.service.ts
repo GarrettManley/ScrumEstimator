@@ -13,9 +13,8 @@ export class DatabaseService {
     this.Database = _firebaseService.GetDB();
   }
 
-  // TODO:: Should this be async?
-  getCollection(path: string) {
-    return this.Database.collection(path).get();
+  async getCollection(path: string) {
+    return await this.Database.collection(path).get();
   }
 
   async createNewDocument(path: string) {
