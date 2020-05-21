@@ -1,13 +1,12 @@
 import { Injectable } from "@angular/core";
 import * as firebase from "firebase";
-import { IFirebaseService } from "./firebase.interface";
 import App = firebase.app.App;
 import Database = firebase.firestore.Firestore;
 
 @Injectable({
   providedIn: "root",
 })
-export class FirebaseService implements IFirebaseService {
+export class FirebaseService {
   App: App;
 
   constructor() {
