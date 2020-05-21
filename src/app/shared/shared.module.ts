@@ -5,6 +5,7 @@ import { CardGroupComponent } from "./card-group/card-group.component";
 import { CardComponent } from "./card/card.component";
 import { ButtonComponent } from "./button/button.component";
 import { FooterComponent } from "./footer/footer.component";
+import { FooterColumnComponent } from './footer/footer-column/footer-column.component';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { FooterComponent } from "./footer/footer.component";
     CardComponent,
     ButtonComponent,
     FooterComponent,
+    FooterColumnComponent,
   ],
   imports: [CommonModule],
   exports: [
