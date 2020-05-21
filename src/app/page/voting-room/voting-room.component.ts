@@ -1,15 +1,16 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, AfterViewInit } from "@angular/core";
 import { Card } from "src/app/shared/models/card/card.model";
 import { SelectableGroup } from "src/app/shared/models/base/base.selectable-group.model";
 import { CardTypes } from "src/app/shared/models/card/card-types.enum";
 import { Button } from "src/app/shared/models/button/button.model";
+import { VotingRoomService } from "src/app/core/services/app/voting-room.service";
 
 @Component({
   selector: "scrum-est-voting-room",
   templateUrl: "./voting-room.component.html",
   styleUrls: ["./voting-room.component.scss"],
 })
-export class VotingRoomComponent implements OnInit {
+export class VotingRoomComponent implements OnInit, AfterViewInit {
   // voting group
   votingGroup: SelectableGroup;
   votingGroups: Button[] = [
@@ -31,9 +32,15 @@ export class VotingRoomComponent implements OnInit {
     new Card("?", CardTypes.interactive),
   ];
 
+  constructor(private _votingRoomService: VotingRoomService) {}
+
   ngOnInit() {
     this.setupVotingGroup();
     this.setupVotingCards();
+  }
+
+  async ngAfterViewInit() {
+    await this._votingRoomService.setupVotingRoom();
   }
 
   setupVotingGroup() {

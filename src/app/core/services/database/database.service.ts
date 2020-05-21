@@ -13,7 +13,13 @@ export class DatabaseService {
     this.Database = _firebaseService.GetDB();
   }
 
-  GetCollection(path: string) {
+  // TODO:: Should this be async?
+  getCollection(path: string) {
     return this.Database.collection(path).get();
+  }
+
+  async createNewDocument(path: string) {
+    const doc = await this.Database.collection(path).add({});
+    return doc.id;
   }
 }
