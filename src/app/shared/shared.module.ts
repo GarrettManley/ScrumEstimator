@@ -5,7 +5,8 @@ import { CardGroupComponent } from "./card-group/card-group.component";
 import { CardComponent } from "./card/card.component";
 import { ButtonComponent } from "./button/button.component";
 import { FooterComponent } from "./footer/footer.component";
-import { FooterColumnComponent } from './footer/footer-column/footer-column.component';
+import { FooterColumnComponent } from "./footer/footer-column/footer-column.component";
+import { PanelComponent } from "./panel/panel.component";
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { FooterColumnComponent } from './footer/footer-column/footer-column.comp
     ButtonComponent,
     FooterComponent,
     FooterColumnComponent,
+    PanelComponent,
   ],
   imports: [CommonModule],
   exports: [
@@ -23,6 +25,7 @@ import { FooterColumnComponent } from './footer/footer-column/footer-column.comp
     CardComponent,
     ButtonComponent,
     FooterComponent,
+    PanelComponent,
   ],
 })
 export class SharedModule {}

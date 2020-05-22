@@ -1,0 +1,11 @@
+<div class="panel">
+
+	<div class="panel-title"
+		 [ngClass]="{ active: active }">
+		<h2 class="panel-title-text">{{ title }}</h2>
+	</div>
+
+	<div class="panel-body">
+		<ng-content></ng-content>
+	</div>
+</div>

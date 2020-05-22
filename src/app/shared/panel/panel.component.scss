@@ -1,0 +1,32 @@
+@import "../../../styles/styles.scss";
+
+.panel {
+  margin-top: 3rem;
+
+  @include fade-in();
+
+  &-title {
+    background: $color-primary;
+    padding: 1rem;
+    border-radius: $dimen-card-corner $dimen-card-corner 0 0;
+    display: inline-block;
+
+    h2 {
+      @include font-normal();
+    }
+
+    &.active {
+      @include shadow-pulse();
+    }
+  }
+
+  &-body {
+    background: $color-white;
+    padding: 3rem 2rem 3rem 2rem;
+    border-radius: 0 $dimen-card-corner $dimen-card-corner;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    @include shadow();
+  }
+}

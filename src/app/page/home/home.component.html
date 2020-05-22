@@ -1,10 +1,10 @@
 <scrum-est-base-page [flex]="true"
 					 [center]="true">
-
-	<div class="home-content">
+	<scrum-est-panel title="Get Started"
+					 [active]="gettingStarted">
 		<scrum-est-button id="createNew"
 						  [buttonModel]="createNewRoomButton"
 						  (click)="createNewRoom()">
 		</scrum-est-button>
-	</div>
+	</scrum-est-panel>
 </scrum-est-base-page>
