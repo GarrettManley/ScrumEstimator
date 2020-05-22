@@ -1,8 +1,16 @@
- @import '../../../styles/styles.scss';
+@import "../../../styles/styles.scss";
 
- .page {
-   margin-left: $padding-body-left;
-   margin-right: $padding-body-right;
-   margin-bottom: 3rem;
-   min-height: calc(100vh - 17.25rem);
- }
+.page {
+  margin-left: $padding-body-left;
+  margin-right: $padding-body-right;
+  margin-bottom: 3rem;
+  min-height: calc(100vh - 17.25rem);
+  &.flex {
+    display: flex;
+    flex-direction: column;
+
+    &.center {
+      justify-content: center;
+    }
+  }
+}

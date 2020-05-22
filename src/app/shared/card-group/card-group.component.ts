@@ -1,10 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { SelectableGroup } from '../models/base/base.selectable-group.model';
+import { Component, OnInit, Input } from "@angular/core";
+import { SelectableGroup } from "../models/base/base.selectable-group.model";
 
 @Component({
-  selector: 'scrum-est-card-group',
-  templateUrl: './card-group.component.html',
-  styleUrls: ['./card-group.component.scss'],
+  selector: "scrum-est-card-group",
+  templateUrl: "./card-group.component.html",
+  styleUrls: ["./card-group.component.scss"],
 })
 export class CardGroupComponent extends SelectableGroup implements OnInit {
   @Input()

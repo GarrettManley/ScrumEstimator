@@ -1,4 +1,4 @@
-@import '../../../styles/styles.scss';
+@import "../../../styles/styles.scss";
 
 .footer {
   background: $color-primary;
@@ -19,10 +19,15 @@
 
     .heading {
       @include font-large();
+      margin-bottom: 0.5rem;
     }
 
     .body {
       @include font-normal();
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
       a {
         @include font-normal();
