@@ -1,20 +1,15 @@
 <scrum-est-base-page>
-  <scrum-est-card-group *ngIf="votingGroup" [cardGroup]="votingGroup">
-    <scrum-est-button
-      *ngFor="let button of votingGroup.group"
-      [buttonModel]="button"
-      (click)="votingGroup.setSelected(button.id)"
-    >
+  <scrum-est-card-group *ngIf="votingGroup"
+                        [cardGroup]="votingGroup">
+    <scrum-est-button *ngFor="let button of votingGroup.group"
+                      [buttonModel]="button"
+                      (click)="votingGroup.setSelected(button.id)">
     </scrum-est-button>
   </scrum-est-card-group>
-  <scrum-est-card-group
-    *ngIf="votingGroup.selectedItem"
-    [cardGroup]="votingCardGroup"
-  >
-    <scrum-est-card
-      *ngFor="let card of votingCardGroup.group"
-      [cardModel]="card"
-      (click)="votingCardGroup.setSelected(card.id)"
-    ></scrum-est-card>
+  <scrum-est-card-group *ngIf="votingGroup.selectedItem"
+                        [cardGroup]="votingCardGroup">
+    <scrum-est-card *ngFor="let card of votingCardGroup.group"
+                    [cardModel]="card"
+                    (click)="votingCardGroup.setSelected(card.id)"></scrum-est-card>
   </scrum-est-card-group>
 </scrum-est-base-page>
