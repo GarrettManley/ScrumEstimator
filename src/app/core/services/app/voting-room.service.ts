@@ -24,6 +24,14 @@ export class VotingRoomService {
     }
   }
 
+  async createNewRoom() {
+    this.votingRoomId = await this._database.createNewDocument(
+      this.votingRoomPath
+    );
+
+    this.writePathForNewVotingRoom();
+  }
+
   private getRoomIdFromParams() {
     this._route.queryParamMap.subscribe((params) => {
       this.votingRoomId = params.get("id");
@@ -52,14 +60,6 @@ export class VotingRoomService {
     });
 
     return this.votingRooms;
-  }
-
-  private async createNewRoom() {
-    this.votingRoomId = await this._database.createNewDocument(
-      this.votingRoomPath
-    );
-    this.writePathForNewVotingRoom();
-    console.log(`new voting room created: ${this.votingRoomId}`);
   }
 
   private writePathForNewVotingRoom() {

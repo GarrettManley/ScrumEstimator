@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 
 @Component({
   selector: "scrum-est-base-page",
@@ -6,6 +6,12 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./base-page.component.scss"],
 })
 export class BasePageComponent implements OnInit {
+  @Input()
+  flex: boolean;
+
+  @Input()
+  center: boolean;
+
   constructor() {}
 
   ngOnInit() {}
