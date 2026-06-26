@@ -33,6 +33,7 @@ export interface Participant {
 
 /** `/rooms/{roomId}/rounds/{roundId}` — status is authoritative here, not on the room. */
 export interface Round {
+  createdAt: Timestamp;
   story: Story;
   deck: Deck;
   status: RoundStatus;

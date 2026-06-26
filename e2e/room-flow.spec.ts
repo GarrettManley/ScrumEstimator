@@ -42,6 +42,10 @@ test('two players vote and the facilitator reveals results in real time', async 
   await expect(fac.page.getByRole('button', { name: 'Reveal votes' })).toBeVisible();
   await expect(voter.getByText('Waiting for the facilitator')).toBeVisible();
 
+  // The completed round now shows in history for both clients (5 + 8 → avg 6.5).
+  await expect(fac.page.getByText('History')).toBeVisible();
+  await expect(voter.getByText('avg 6.5')).toBeVisible();
+
   await fac.context.close();
   await voterContext.close();
 });

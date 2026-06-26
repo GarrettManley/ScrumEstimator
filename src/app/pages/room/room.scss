@@ -161,6 +161,33 @@ h2 {
   color: $color-secondary-hover;
 }
 
+.history {
+  margin-top: 2.5rem;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0.75rem;
+    background: $color-white;
+    border-radius: $dimen-card-corner;
+    color: $color-secondary;
+  }
+
+  .h-outcome {
+    color: $color-primary;
+  }
+}
+
 .primary {
   align-self: flex-start;
   padding: 0.75rem 1.5rem;

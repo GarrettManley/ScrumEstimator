@@ -5,6 +5,8 @@ import {
   getDoc,
   getDocs,
   onSnapshot,
+  orderBy,
+  query,
   serverTimestamp,
   setDoc,
   Unsubscribe,
@@ -39,6 +41,15 @@ export class RoomStore {
   readonly participants = signal<ParticipantView[]>([]);
   readonly round = signal<WithId<Round> | null>(null);
   readonly ownVote = signal<string | null>(null);
+  readonly rounds = signal<WithId<Round>[]>([]);
+
+  /** Revealed rounds other than the current one, newest first — the in-session history. */
+  readonly history = computed(() => {
+    const currentId = this.room()?.currentRoundId;
+    return this.rounds()
+      .filter((r) => r.status === 'revealed' && r.results && r.id !== currentId)
+      .reverse();
+  });
 
   readonly isFacilitator = computed(() => {
     const r = this.room();
@@ -90,6 +101,7 @@ export class RoomStore {
       currentRoundId: roundId,
     });
     await setDoc(doc(db, 'rooms', roomId, 'rounds', roundId), {
+      createdAt: serverTimestamp(),
       story: { title: '', description: '' },
       deck,
       status: 'voting',
@@ -164,6 +176,7 @@ export class RoomStore {
     }
     const newRoundId = nanoid(10);
     await setDoc(doc(db, 'rooms', room.id, 'rounds', newRoundId), {
+      createdAt: serverTimestamp(),
       story: round.story,
       deck: room.deck,
       status: 'voting',
@@ -198,6 +211,7 @@ export class RoomStore {
     this.participants.set([]);
     this.round.set(null);
     this.ownVote.set(null);
+    this.rounds.set([]);
     this.roomNotFound.set(false);
     this.watchedRoundId = undefined;
   }
@@ -225,6 +239,15 @@ export class RoomStore {
       onSnapshot(collection(db, 'rooms', roomId, 'participants'), (snap) => {
         this.participants.set(snap.docs.map((d) => ({ uid: d.id, ...(d.data() as Participant) })));
       }),
+    );
+
+    this.roomSubs.push(
+      onSnapshot(
+        query(collection(db, 'rooms', roomId, 'rounds'), orderBy('createdAt', 'asc')),
+        (snap) => {
+          this.rounds.set(snap.docs.map((d) => ({ id: d.id, ...(d.data() as Round) })));
+        },
+      ),
     );
 
     this.startHeartbeat(roomId);

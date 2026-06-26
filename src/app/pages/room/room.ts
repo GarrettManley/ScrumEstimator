@@ -3,6 +3,7 @@ import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ParticipantView, RoomStore } from '../../core/room/room-store';
+import { Round } from '../../core/room/models';
 import { AiKeyStore } from '../../core/ai/key-store';
 import { AiError, suggestEstimate } from '../../core/ai/claude';
 
@@ -114,6 +115,21 @@ export class Room {
 
   isMe(p: ParticipantView): boolean {
     return p.uid === this.store.uid();
+  }
+
+  /** One-line outcome summary for a past round in the history list. */
+  outcome(r: Round): string {
+    const res = r.results;
+    if (!res) {
+      return '—';
+    }
+    if (res.consensus) {
+      return `${res.mode[0]} · consensus`;
+    }
+    if (res.mean !== undefined) {
+      return `avg ${res.mean.toFixed(1)}`;
+    }
+    return res.mode.join(' / ') || '—';
   }
 
   async copyLink(): Promise<void> {

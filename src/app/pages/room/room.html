@@ -166,5 +166,19 @@
         }
       </main>
     </div>
+
+    @if (store.history().length) {
+      <section class="history">
+        <h2>History</h2>
+        <ul>
+          @for (r of store.history(); track r.id) {
+            <li>
+              <span class="h-story">{{ r.story.title || '(untitled)' }}</span>
+              <span class="h-outcome">{{ outcome(r) }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
   </section>
 }
