@@ -139,7 +139,7 @@
           }
 
           @if (remaining() !== null) {
-            <p class="timer" [class.expired]="remaining() === 0">
+            <p class="timer" [class.expired]="remaining() === 0" aria-live="polite">
               {{ remaining() === 0 ? "⏱ Time's up" : '⏱ ' + remaining() + 's left' }}
             </p>
           }
@@ -169,7 +169,7 @@
         } @else {
           <h2>Results</h2>
           @if (store.round()?.results; as r) {
-            <div class="results">
+            <div class="results" role="status" aria-live="polite">
               <div class="dist">
                 @for (entry of distribution(); track entry[0]) {
                   <div class="bar-row">

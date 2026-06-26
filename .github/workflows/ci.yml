@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  build-test:
+    name: Build & test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      # Firestore/Auth emulators (rules + e2e) need Java 21+.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test:ci
+      - run: npm run build
+      - run: npm run test:rules
+      - run: npx playwright install --with-deps chromium
+      - run: npm run e2e
+
+  deploy:
+    name: Deploy (Firebase)
+    needs: build-test
+    # Opt-in: set repo variable DEPLOY_ENABLED=true and add the secret/vars below.
+    if: ${{ github.event_name == 'push' && github.ref_name == 'master' && vars.DEPLOY_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Write service account
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > "${RUNNER_TEMP}/sa.json"
+      # Project-global Firestore config first (rules + indexes), then the site.
+      # No composite indexes are defined yet, so there is nothing to wait on; add an
+      # index-ready gate here if that changes.
+      - name: Deploy Firestore rules & indexes
+        run: npx firebase deploy --only firestore:rules,firestore:indexes --project "${{ vars.FIREBASE_PROJECT_ID }}" --non-interactive
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/sa.json
+      - name: Deploy Hosting
+        run: npx firebase deploy --only hosting --project "${{ vars.FIREBASE_PROJECT_ID }}" --non-interactive
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/sa.json

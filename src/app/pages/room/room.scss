@@ -106,7 +106,7 @@ h2 {
   border: 2px solid $color-primary;
   border-radius: $dimen-card-corner;
   background: $color-white;
-  color: $color-primary;
+  color: $color-primary-dark;
   font-size: $font-size-normal;
   cursor: pointer;
   transition: transform 0.1s ease;
@@ -200,12 +200,12 @@ h2 {
   gap: 0.4rem;
 
   .consensus {
-    color: $color-primary;
+    color: $color-primary-dark;
   }
 }
 
 .muted {
-  color: $color-secondary-hover;
+  color: $color-secondary;
 }
 
 .history {
@@ -231,7 +231,7 @@ h2 {
   }
 
   .h-outcome {
-    color: $color-primary;
+    color: $color-primary-dark;
   }
 }
 
@@ -261,7 +261,7 @@ h2 {
   border: 1px solid $color-primary;
   border-radius: $dimen-card-corner;
   background: transparent;
-  color: $color-primary;
+  color: $color-primary-dark;
   cursor: pointer;
 
   &:disabled {
@@ -324,7 +324,7 @@ h2 {
 
     summary {
       cursor: pointer;
-      color: $color-primary;
+      color: $color-primary-dark;
     }
 
     input[type='password'] {
