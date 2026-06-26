@@ -1,11 +1,74 @@
 rules_version = '2';
 
-// PLACEHOLDER rules for M0 scaffolding only.
-// The real, hidden-vote-enforcing ruleset lands in M1 (see plan §Security rules).
+// ScrumEstimator — planning-poker security model.
+//
+// Crux: votes stay hidden until the facilitator reveals. A voter can write only
+// their own vote (a value that exists in the round's deck) and only while voting
+// is open; they can read their own vote always, but another player's vote only
+// once the round is revealed. The facilitator may read all votes (to aggregate
+// `results` at reveal) and is the only one who may change round/room state.
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if request.auth != null;
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function uid() {
+      return request.auth.uid;
+    }
+
+    match /rooms/{roomId} {
+      function roomData() {
+        return get(/databases/$(database)/documents/rooms/$(roomId)).data;
+      }
+      function isFacilitator() {
+        return isSignedIn() && roomData().facilitatorUid == uid();
+      }
+
+      // Anyone signed in can read a room (needed to join via a shared link).
+      allow read: if isSignedIn();
+      // The creator must stamp themselves as the facilitator.
+      allow create: if isSignedIn() && request.resource.data.facilitatorUid == uid();
+      // Only the facilitator may mutate room state, and may not hand off facilitation.
+      allow update: if isFacilitator()
+        && request.resource.data.facilitatorUid == resource.data.facilitatorUid;
+      allow delete: if false;
+
+      match /participants/{participantUid} {
+        // The roster is visible to everyone in the room.
+        allow read: if isSignedIn();
+        // Each player manages only their own participant doc (name, role, presence, hasVoted).
+        allow create, update, delete: if isSignedIn() && uid() == participantUid;
+      }
+
+      match /rounds/{roundId} {
+        function roundData() {
+          return get(/databases/$(database)/documents/rooms/$(roomId)/rounds/$(roundId)).data;
+        }
+
+        // Rounds (incl. revealed results) are readable to everyone in the room.
+        allow read: if isSignedIn();
+        // Only the facilitator creates rounds and flips status / writes results.
+        allow create, update: if isFacilitator();
+        allow delete: if false;
+
+        match /votes/{voterUid} {
+          // Read your own vote anytime; others' only after reveal; the facilitator may read all.
+          allow read: if isSignedIn() && (
+            uid() == voterUid
+            || isFacilitator()
+            || roundData().status == 'revealed'
+          );
+          // Write only your own vote, only while voting is open, only a value in the deck.
+          allow create, update: if isSignedIn()
+            && uid() == voterUid
+            && roundData().status == 'voting'
+            && request.resource.data.value is string
+            && roundData().deck.values.hasAny([request.resource.data.value]);
+          allow delete: if false;
+        }
+      }
     }
   }
 }

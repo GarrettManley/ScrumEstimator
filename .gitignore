@@ -39,6 +39,17 @@ testem.log
 /typings
 __screenshots__/
 
+# Firebase emulator logs
+*-debug.log
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# Playwright
+/test-results
+/playwright-report
+/playwright/.cache
+
 # System files
 .DS_Store
 Thumbs.db

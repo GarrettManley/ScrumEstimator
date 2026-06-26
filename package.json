@@ -8,6 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:ci": "ng test --no-watch",
+    "test:rules": "firebase emulators:exec --only firestore --project demo-scrum \"vitest run --config vitest.rules.config.ts\"",
     "lint": "ng lint",
     "e2e": "playwright test",
     "emulators": "firebase emulators:start"
@@ -31,6 +32,7 @@
     "@angular/cli": "^22.0.4",
     "@angular/compiler-cli": "^22.0.0",
     "@eslint/js": "^10.0.1",
+    "@firebase/rules-unit-testing": "^5.0.1",
     "@playwright/test": "^1.61.1",
     "@types/node": "^26.0.1",
     "angular-eslint": "22.0.0",

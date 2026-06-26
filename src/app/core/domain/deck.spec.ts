@@ -1,10 +1,4 @@
-import {
-  classifyDeck,
-  customDeck,
-  isNumericValue,
-  isSpecialValue,
-  presetDeck,
-} from './deck';
+import { classifyDeck, customDeck, isNumericValue, isSpecialValue, presetDeck } from './deck';
 
 describe('deck values', () => {
   it('treats ? and coffee as special (non-estimate) values', () => {
