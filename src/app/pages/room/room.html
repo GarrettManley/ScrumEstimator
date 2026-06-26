@@ -1,0 +1,218 @@
+@if (store.roomNotFound()) {
+  <section class="notice">
+    <h1>Room not found</h1>
+    <p>That room doesn’t exist or has expired. <a routerLink="/">Create a new one</a>.</p>
+  </section>
+} @else if (needsJoin()) {
+  <section class="join">
+    <h1>Join room</h1>
+    <label class="field">
+      <span>Your name</span>
+      <input
+        [ngModel]="joinName()"
+        (ngModelChange)="joinName.set($event)"
+        (keyup.enter)="join()"
+        placeholder="e.g. Garrett"
+        autocomplete="off"
+        aria-label="Your name"
+      />
+    </label>
+    <button class="primary" (click)="join()" [disabled]="joining() || !joinName().trim()">
+      {{ joining() ? 'Joining…' : 'Join' }}
+    </button>
+  </section>
+} @else {
+  <section class="room">
+    <div class="room-bar">
+      <span class="label">Share link</span>
+      <code class="link">{{ shareUrl() }}</code>
+      <button class="ghost" (click)="copyLink()">{{ copied() ? 'Copied!' : 'Copy' }}</button>
+      <button class="ghost" (click)="toggleSpectator()">
+        {{ store.isSpectator() ? 'Become voter' : 'Spectate' }}
+      </button>
+    </div>
+
+    <div class="layout">
+      <aside class="roster">
+        <h2>Players ({{ store.participants().length }})</h2>
+        <ul>
+          @for (p of store.participants(); track p.uid) {
+            <li [class.away]="store.isAway(p)">
+              <span class="dot" [class.voted]="store.hasVotedThisRound(p)" aria-hidden="true"></span>
+              <span class="who">{{ p.displayName }}@if (isMe(p)) { <em> (you)</em> }</span>
+            </li>
+          } @empty {
+            <li class="muted">No one here yet.</li>
+          }
+        </ul>
+      </aside>
+
+      <main class="table">
+        <!-- Story: facilitator edits; everyone else sees it -->
+        @if (store.isFacilitator()) {
+          <div class="story-edit">
+            <input
+              class="story-title"
+              placeholder="Story title"
+              [ngModel]="storyTitle()"
+              (ngModelChange)="storyTitle.set($event)"
+              (blur)="saveStory()"
+              aria-label="Story title"
+            />
+            <textarea
+              class="story-desc"
+              placeholder="Description (optional)"
+              [ngModel]="storyDesc()"
+              (ngModelChange)="storyDesc.set($event)"
+              (blur)="saveStory()"
+              aria-label="Story description"
+            ></textarea>
+          </div>
+        } @else if (store.round()?.story?.title) {
+          <div class="story">
+            <h3>{{ store.round()?.story?.title }}</h3>
+            @if (store.round()?.story?.description) {
+              <p>{{ store.round()?.story?.description }}</p>
+            }
+          </div>
+        }
+
+        <!-- Advisory AI suggestion; everyone sees it once set -->
+        @if (store.round()?.aiSuggestion; as ai) {
+          <div class="ai-suggestion">
+            🤖 Claude suggests <strong>{{ ai.points }}</strong> — {{ ai.rationale }}
+          </div>
+        }
+
+        @if (!store.revealed()) {
+          @if (store.isFacilitator()) {
+            <div class="ai-panel">
+              @if (keys.hasKey()) {
+                <button class="ghost" (click)="suggest()" [disabled]="suggesting()">
+                  {{ suggesting() ? 'Asking Claude…' : 'Suggest estimate (AI)' }}
+                </button>
+                <button class="link-btn" (click)="keys.clear()">Forget key</button>
+              } @else {
+                <details class="key-entry">
+                  <summary>Use AI estimation (bring your own key)</summary>
+                  <input
+                    type="password"
+                    placeholder="Anthropic API key — stays in your browser"
+                    [ngModel]="keyInput()"
+                    (ngModelChange)="keyInput.set($event)"
+                    aria-label="Anthropic API key"
+                  />
+                  <label class="remember">
+                    <input
+                      type="checkbox"
+                      [ngModel]="remember()"
+                      (ngModelChange)="remember.set($event)"
+                    />
+                    Remember on this device
+                  </label>
+                  <button class="ghost" (click)="saveKey()" [disabled]="!keyInput().trim()">
+                    Save key
+                  </button>
+                </details>
+              }
+              @if (aiError()) {
+                <p class="error">{{ aiError() }}</p>
+              }
+            </div>
+          }
+
+          @if (store.isFacilitator()) {
+            <div class="facilitator-tools">
+              <label>
+                Deck:
+                <select (change)="switchDeck($any($event.target).value)">
+                  <option value="fib" [selected]="store.deck().type === 'fib'">Fibonacci</option>
+                  <option value="pow2" [selected]="store.deck().type === 'pow2'">Powers of 2</option>
+                  <option value="tshirt" [selected]="store.deck().type === 'tshirt'">T-shirt</option>
+                  @if (store.deck().type === 'custom') {
+                    <option value="custom" selected>Custom</option>
+                  }
+                </select>
+              </label>
+              <button class="ghost" (click)="startTimer(60)">Start 60s timer</button>
+            </div>
+          }
+
+          @if (remaining() !== null) {
+            <p class="timer" [class.expired]="remaining() === 0" aria-live="polite">
+              {{ remaining() === 0 ? "⏱ Time's up" : '⏱ ' + remaining() + 's left' }}
+            </p>
+          }
+
+          <h2>Pick your card</h2>
+          @if (store.isSpectator()) {
+            <p class="muted">You’re spectating — you won’t cast a vote this round.</p>
+          } @else {
+            <div class="cards">
+              @for (value of store.deck().values; track value) {
+                <button
+                  class="card"
+                  [class.selected]="value === store.ownVote()"
+                  (click)="vote(value)"
+                  [attr.aria-pressed]="value === store.ownVote()"
+                >
+                  {{ value }}
+                </button>
+              }
+            </div>
+          }
+          @if (store.isFacilitator()) {
+            <button class="primary" (click)="reveal()">Reveal votes</button>
+          } @else {
+            <p class="muted">Waiting for the facilitator to reveal…</p>
+          }
+        } @else {
+          <h2>Results</h2>
+          @if (store.round()?.results; as r) {
+            <div class="results" role="status" aria-live="polite">
+              <div class="dist">
+                @for (entry of distribution(); track entry[0]) {
+                  <div class="bar-row">
+                    <span class="bar-label">{{ entry[0] }}</span>
+                    <span class="bar"><span class="bar-fill" [style.width]="barWidth(entry[1])"></span></span>
+                    <span class="bar-count">{{ entry[1] }}</span>
+                  </div>
+                }
+              </div>
+              <ul class="summary">
+                <li>Votes cast: {{ r.voterCount }}</li>
+                @if (r.mean !== undefined) {
+                  <li>Average: {{ r.mean | number: '1.0-2' }}</li>
+                }
+                <li>Most common: {{ r.mode.length ? r.mode.join(', ') : '—' }}</li>
+                <li [class.consensus]="r.consensus">
+                  {{ r.consensus ? 'Consensus reached 🎉' : 'No consensus yet' }}
+                </li>
+              </ul>
+            </div>
+          }
+          @if (store.isFacilitator()) {
+            <button class="primary" (click)="reset()">New round</button>
+          }
+        }
+      </main>
+    </div>
+
+    @if (store.history().length) {
+      <section class="history">
+        <div class="history-head">
+          <h2>History</h2>
+          <button class="ghost" (click)="exportCsv()">Export CSV</button>
+        </div>
+        <ul>
+          @for (r of store.history(); track r.id) {
+            <li>
+              <span class="h-story">{{ r.story.title || '(untitled)' }}</span>
+              <span class="h-outcome">{{ outcome(r) }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  </section>
+}

@@ -1,0 +1,6 @@
+// Design-system barrel: tokens + mixins.
+// Consume from any component with `@use '...styles/design' as *;`
+@forward 'colors';
+@forward 'dimens';
+@forward 'typography';
+@forward 'mixins';

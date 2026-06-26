@@ -1,0 +1,59 @@
+@use 'colors' as *;
+
+@mixin shadow {
+  box-shadow: 0 0.25rem 0.5rem 0 $color-shadow;
+}
+
+@mixin shadow-inverted {
+  box-shadow: inset 0 0.25rem 0.5rem 0 $color-shadow;
+}
+
+@mixin shadow-hover {
+  box-shadow: 0 0.5rem 1rem 0 $color-shadow;
+}
+
+@mixin slide-in-from-top {
+  animation: slide-down 1s;
+
+  @keyframes slide-down {
+    0% {
+      margin-left: -100rem;
+      margin-top: -100rem;
+    }
+  }
+}
+
+@mixin fade-in {
+  animation: fade-in 1s;
+
+  @keyframes fade-in {
+    0% {
+      transform: scale(0.5);
+      opacity: 0;
+    }
+  }
+}
+
+@mixin shadow-pulse {
+  $duration: 1s;
+  $rotation: 3deg;
+  $y-translation: -0.5rem;
+  $scale: 1.05;
+
+  animation: shadow-pulse $duration infinite;
+
+  @keyframes shadow-pulse {
+    25% {
+      transform: rotate($rotation);
+    }
+
+    50% {
+      @include shadow-hover;
+      transform: scale($scale) translateY($y-translation);
+    }
+
+    75% {
+      transform: rotate(-$rotation);
+    }
+  }
+}

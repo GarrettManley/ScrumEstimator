@@ -1,116 +1,82 @@
 # ScrumEstimator
 
-ScrumEstimator is a tool for scrum teams to estimate effort for stories in a "Planning Poker" style.
+Real-time **planning poker** for agile teams. Create a room, share the link, vote on a
+story, and reveal — with optional, bring-your-own-key **AI estimate suggestions**.
 
-- [ScrumEstimator](#scrumestimator)
-  - [Architecture](#architecture)
-    - [Components](#components)
-      - [Page](#page)
-        - [Location in project](#location-in-project)
-        - [Naming Conventions](#naming-conventions)
-      - [Shared](#shared)
-        - [Location in project](#location-in-project-1)
-        - [Naming Conventions](#naming-conventions-1)
-    - [Services](#services)
-  - [Angular](#angular)
-    - [Development server](#development-server)
-    - [Code scaffolding](#code-scaffolding)
-    - [Build](#build)
-    - [Running unit tests](#running-unit-tests)
-    - [Running end-to-end tests](#running-end-to-end-tests)
-    - [Further help](#further-help)
+Originally started in 2020 (Angular 9) and left unfinished; rebuilt in 2026 on a modern
+stack and completed.
 
----
+## Features
 
-## Architecture
+- **Frictionless rooms** — create a room, share a link; no sign-up. Anonymous auth under
+  the hood.
+- **Hidden voting → reveal** — votes stay hidden until the facilitator reveals, then the
+  distribution, mean/mode, and consensus are shown. Enforced in Firestore security rules,
+  not just the UI.
+- **Live presence** — see who's in the room and who has voted, in real time.
+- **AI estimation (BYO key)** — the facilitator can ask Claude to suggest a point value
+  from the story text. Advisory only; never auto-cast.
+- **Round history** and **CSV export**.
+- **Spectator mode**, a per-round **timer**, a **distribution chart**, and **custom decks**
+  (Fibonacci / powers-of-2 / T-shirt / your own values).
 
-### Components
+## Stack
 
-Components will have two categories, `page` or `shared`
+Angular 22 (standalone, signals, zoneless) · Firebase (Firestore + Anonymous Auth +
+Hosting) via the modular Web SDK · Vitest (unit) · Playwright (e2e) ·
+`@firebase/rules-unit-testing` (security-rules tests) · ESLint.
 
-#### Page
+## Develop
 
-A `page` represents a component that houses an entire feature set. Pages should be built using as many `shared` components as possible.
+Prerequisites: **Node 24+** and a **JDK 21+** (the Firebase emulators require Java).
 
-- Pages should act as a container or view of sub components an functionality
-- Pages should not define any business logic themselves, all business logic should be defined in either a shared component or a service.
-
-##### Location in project
-
-Pages should be located in the following location in the project folder structure:
-
-```
-src
-└── app
-  └── page
+```bash
+npm install
+npm start            # ng serve → http://localhost:4200 (talks to the emulators)
+npm run emulators    # Firestore + Auth emulators (run in another terminal)
 ```
 
-##### Naming Conventions
+In development the app targets a self-contained demo project on the local emulators, so no
+real Firebase credentials are needed.
 
-Pages should be named using the following convention:
+## Test
 
-`<page-name>.page.component.<file-ext>`
-
-Examples:
-
-- `home.page.component.ts`
-- `home.page.component.html`
-- `home.page.component.spec.ts`
-
-#### Shared
-
-Shared components are the building blocks of the application. These are components that are designed for reuse throughout the application.
-
-##### Location in project
-
-Shared components should be located in the following location in the project folder structure:
-
-```
-src
-└── app
-  └── shared
+```bash
+npm run lint
+npm run test:ci      # Vitest unit tests
+npm run test:rules   # Firestore security-rules tests (in the emulator)
+npm run e2e          # Playwright e2e (wraps the emulators) — incl. an axe a11y pass
 ```
 
-##### Naming Conventions
+The e2e suite drives two browser contexts through a full join → vote → reveal → new-round
+flow and doubles as a scripted multi-client demo of the realtime loop.
 
-Shared components should be named using the standard angular component convention:
+## AI estimation — how the BYO key works
 
-`<component-name>.component.<file-ext>`
+The "Suggest estimate" feature calls the Anthropic API **directly from the browser** using
+the facilitator's own API key (`anthropic-dangerous-direct-browser-access`). This is a
+deliberate design choice, not an oversight:
 
-Examples:
+- There is **no server and no shared key** — each user brings their own, so the project has
+  zero AI cost and no abuse surface tied to the owner.
+- The key is held **in memory by default**; "remember on this device" persists it to
+  `localStorage` only if you opt in. It is **never written to Firestore or any server we
+  run** — it goes only to Anthropic.
+- A strict Content-Security-Policy (see `firebase.json`) limits where the page can send
+  data, reducing the exfiltration surface for a stored key.
+- **Privacy note:** when you use AI estimation, the round's story title/description is sent
+  to Anthropic to produce a suggestion.
 
-- `card.component.ts`
-- `card.component.html`
-- `card.component.spec.ts`
+## Deploy
 
-### Services
+Production builds swap in `src/environments/environment.prod.ts` (fill in the real Firebase
+web config there) and talk to the live project. CI (`.github/workflows/ci.yml`) runs
+lint/unit/rules/e2e on every push; the opt-in deploy job (set repo variable
+`DEPLOY_ENABLED=true`, plus `FIREBASE_PROJECT_ID` and a `FIREBASE_SERVICE_ACCOUNT` secret)
+deploys Firestore rules + indexes and then Hosting on pushes to `master`.
 
----
-
-## Angular
-
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.0.
-
-### Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-### Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-### Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-### Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-### Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-### Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```bash
+npm run build                                   # production bundle
+npx firebase deploy --only firestore:rules,firestore:indexes
+npx firebase deploy --only hosting
+```

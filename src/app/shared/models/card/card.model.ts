@@ -1,7 +1,6 @@
-import * as nanoid from "nanoid";
-import { CardTypes } from "./card-types.enum";
-import { environment } from "src/environments/environment";
-import { ISelectable } from "../base/base.interface.selectable";
+import { nanoid } from 'nanoid';
+import { CardTypes } from './card-types.enum';
+import { ISelectable } from '../base/base.interface.selectable';
 
 export class Card implements ISelectable {
   public id: string;
@@ -18,7 +17,7 @@ export class Card implements ISelectable {
     this.setDisplayClass(v);
   }
 
-  private _selected: boolean;
+  private _selected = false;
   public get selected(): boolean {
     return this._selected;
   }
@@ -30,7 +29,7 @@ export class Card implements ISelectable {
     }
   }
 
-  constructor(val?: string, type?: CardTypes, selected: boolean = false) {
+  constructor(val?: string, type?: CardTypes, selected = false) {
     this.id = nanoid();
 
     this.value = val;
@@ -46,12 +45,8 @@ export class Card implements ISelectable {
   }
 
   private validateCardValue() {
-    if (!environment.production) {
-      if (this.value === undefined) {
-        console.log(`card ${this.id} has no value set`);
-      } else if (this.value.toString().length > 3) {
-        throw new Error("num length is too long to fit in card");
-      }
+    if (this.value !== undefined && this.value.toString().length > 3) {
+      throw new Error('Card value is too long to fit in card');
     }
   }
 

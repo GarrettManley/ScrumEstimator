@@ -1,0 +1,42 @@
+<section class="home">
+  <h1>Planning Poker</h1>
+  <p>Create a room, then share the link with your team. No sign-up needed.</p>
+
+  <label class="field">
+    <span>Your name</span>
+    <input
+      [ngModel]="name()"
+      (ngModelChange)="name.set($event)"
+      (keyup.enter)="create()"
+      placeholder="e.g. Garrett"
+      autocomplete="off"
+      aria-label="Your name"
+    />
+  </label>
+
+  <label class="field">
+    <span>Deck</span>
+    <select [ngModel]="deckType()" (ngModelChange)="deckType.set($event)" aria-label="Deck">
+      <option value="fib">Fibonacci (0, 1, 2, 3, 5, 8, …)</option>
+      <option value="pow2">Powers of 2 (0, 1, 2, 4, 8, …)</option>
+      <option value="tshirt">T-shirt (XS – XL)</option>
+      <option value="custom">Custom…</option>
+    </select>
+  </label>
+
+  @if (deckType() === 'custom') {
+    <label class="field">
+      <span>Custom values (comma-separated)</span>
+      <input
+        [ngModel]="customValues()"
+        (ngModelChange)="customValues.set($event)"
+        placeholder="e.g. 1, 2, 3, 5, 8, ?"
+        aria-label="Custom deck values"
+      />
+    </label>
+  }
+
+  <button class="primary" (click)="create()" [disabled]="creating() || !name().trim()">
+    {{ creating() ? 'Creating…' : 'Create room' }}
+  </button>
+</section>

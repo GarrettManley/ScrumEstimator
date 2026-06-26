@@ -1,7 +1,0 @@
-{
-  "extends": "../tslint.json",
-  "rules": {
-    "directive-selector": [true, "attribute", "scrum-est", "camelCase"],
-    "component-selector": [true, "element", "scrum-est", "kebab-case"]
-  }
-}

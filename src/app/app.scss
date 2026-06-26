@@ -1,0 +1,19 @@
+@use '../styles/design' as *;
+
+.app-header {
+  display: flex;
+  align-items: center;
+  height: $nav-bar-height;
+  padding: 0 $padding-body-left;
+  background: $color-primary;
+  @include shadow;
+}
+
+.brand {
+  color: $color-white;
+  font-size: $font-size-normal;
+}
+
+.app-main {
+  padding: 2rem $padding-body-left;
+}
