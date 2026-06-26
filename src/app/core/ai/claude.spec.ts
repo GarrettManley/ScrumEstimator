@@ -14,7 +14,9 @@ function fakeFetch(status: number, body: unknown): typeof fetch {
 }
 
 function toolResponse(points: string, rationale = 'because') {
-  return { content: [{ type: 'tool_use', name: 'provide_estimate', input: { points, rationale } }] };
+  return {
+    content: [{ type: 'tool_use', name: 'provide_estimate', input: { points, rationale } }],
+  };
 }
 
 describe('suggestEstimate', () => {
@@ -51,7 +53,12 @@ describe('suggestEstimate', () => {
 
   it('throws no-key when the api key is empty', async () => {
     await expect(
-      suggestEstimate({ apiKey: '', story, deck: fib, fetchImpl: fakeFetch(200, toolResponse('5')) }),
+      suggestEstimate({
+        apiKey: '',
+        story,
+        deck: fib,
+        fetchImpl: fakeFetch(200, toolResponse('5')),
+      }),
     ).rejects.toMatchObject({ kind: 'no-key' });
   });
 

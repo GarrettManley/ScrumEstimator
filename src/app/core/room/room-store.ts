@@ -118,7 +118,11 @@ export class RoomStore {
   }
 
   /** Join an existing room, or flag not-found if the id is unknown. */
-  async joinRoom(roomId: string, displayName: string, role: ParticipantRole = 'voter'): Promise<void> {
+  async joinRoom(
+    roomId: string,
+    displayName: string,
+    role: ParticipantRole = 'voter',
+  ): Promise<void> {
     const snap = await getDoc(doc(db, 'rooms', roomId));
     if (!snap.exists()) {
       this.roomNotFound.set(true);

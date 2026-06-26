@@ -16,7 +16,13 @@ function round(title: string, results: Round['results']): Round {
 describe('roundsToCsv', () => {
   it('writes a header and one row per round', () => {
     const csv = roundsToCsv([
-      round('Login', { voterCount: 3, distribution: { '5': 3 }, mode: ['5'], mean: 5, consensus: true }),
+      round('Login', {
+        voterCount: 3,
+        distribution: { '5': 3 },
+        mode: ['5'],
+        mean: 5,
+        consensus: true,
+      }),
     ]);
     const lines = csv.split('\r\n');
     expect(lines[0]).toBe('Story,Votes,Average,Most common,Consensus');
@@ -25,7 +31,13 @@ describe('roundsToCsv', () => {
 
   it('quotes fields containing commas or quotes', () => {
     const csv = roundsToCsv([
-      round('Add "search", fast', { voterCount: 1, distribution: { '8': 1 }, mode: ['8'], mean: 8, consensus: false }),
+      round('Add "search", fast', {
+        voterCount: 1,
+        distribution: { '8': 1 },
+        mode: ['8'],
+        mean: 8,
+        consensus: false,
+      }),
     ]);
     expect(csv.split('\r\n')[1]).toContain('"Add ""search"", fast"');
   });

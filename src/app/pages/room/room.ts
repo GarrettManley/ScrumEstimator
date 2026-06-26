@@ -123,7 +123,11 @@ export class Room {
     this.suggesting.set(true);
     this.aiError.set(null);
     try {
-      const suggestion = await suggestEstimate({ apiKey, story: round.story, deck: this.store.deck() });
+      const suggestion = await suggestEstimate({
+        apiKey,
+        story: round.story,
+        deck: this.store.deck(),
+      });
       await this.store.applyAiSuggestion(suggestion);
     } catch (e) {
       this.aiError.set(e instanceof AiError ? e.message : 'AI request failed.');
