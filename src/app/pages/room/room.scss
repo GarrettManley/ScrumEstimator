@@ -143,6 +143,53 @@ h2 {
   font-size: $font-size-normal;
 }
 
+.bar {
+  flex: 1;
+  max-width: 12rem;
+  height: 0.8rem;
+  background: $color-light;
+  border-radius: $dimen-card-corner;
+  overflow: hidden;
+}
+
+.bar-fill {
+  display: block;
+  height: 100%;
+  background: $color-primary;
+}
+
+.facilitator-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  color: $color-secondary;
+
+  select {
+    padding: 0.3rem 0.5rem;
+    border-radius: $dimen-card-corner;
+    color: $color-black;
+  }
+}
+
+.timer {
+  font-size: $font-size-normal;
+  color: $color-secondary;
+  margin-bottom: 0.5rem;
+
+  &.expired {
+    color: #c0392b;
+  }
+}
+
+.history-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 .summary {
   list-style: none;
   padding: 0;

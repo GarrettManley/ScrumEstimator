@@ -9,13 +9,14 @@ import {
   query,
   serverTimestamp,
   setDoc,
+  Timestamp,
   Unsubscribe,
   updateDoc,
 } from 'firebase/firestore';
 import { nanoid } from 'nanoid';
 import { auth, db } from '../firebase/firebase';
 import { computeResults } from '../domain/consensus';
-import { DeckType, presetDeck } from '../domain/deck';
+import { Deck, presetDeck } from '../domain/deck';
 import { Participant, ParticipantRole, Room, Round, RoundStatus, Story, Vote } from './models';
 import { AiSuggestion } from '../ai/claude';
 
@@ -59,6 +60,12 @@ export class RoomStore {
   readonly revealed = computed(() => this.status() === 'revealed');
   readonly deck = computed(() => this.round()?.deck ?? this.room()?.deck ?? presetDeck('fib'));
 
+  readonly myRole = computed<ParticipantRole>(() => {
+    const uid = this._uid();
+    return this.participants().find((p) => p.uid === uid)?.role ?? 'voter';
+  });
+  readonly isSpectator = computed(() => this.myRole() === 'spectator');
+
   private roomSubs: Unsubscribe[] = [];
   private roundSubs: Unsubscribe[] = [];
   private heartbeatTimer: ReturnType<typeof setInterval> | undefined;
@@ -88,11 +95,10 @@ export class RoomStore {
   }
 
   /** Create a room, become its facilitator, open the first round, and start watching. */
-  async createRoom(displayName: string, deckType: DeckType = 'fib'): Promise<string> {
+  async createRoom(displayName: string, deck: Deck = presetDeck('fib')): Promise<string> {
     const uid = this.requireUid();
     const roomId = nanoid(8);
     const roundId = nanoid(10);
-    const deck = presetDeck(deckType === 'custom' ? 'fib' : deckType);
 
     await setDoc(doc(db, 'rooms', roomId), {
       createdAt: serverTimestamp(),
@@ -112,13 +118,13 @@ export class RoomStore {
   }
 
   /** Join an existing room, or flag not-found if the id is unknown. */
-  async joinRoom(roomId: string, displayName: string): Promise<void> {
+  async joinRoom(roomId: string, displayName: string, role: ParticipantRole = 'voter'): Promise<void> {
     const snap = await getDoc(doc(db, 'rooms', roomId));
     if (!snap.exists()) {
       this.roomNotFound.set(true);
       return;
     }
-    await this.upsertSelf(roomId, displayName, 'voter');
+    await this.upsertSelf(roomId, displayName, role);
     this.watch(roomId);
   }
 
@@ -202,6 +208,44 @@ export class RoomStore {
       return;
     }
     await updateDoc(doc(db, 'rooms', room.id, 'rounds', round.id), { aiSuggestion: suggestion });
+  }
+
+  /** Switch the caller between voter and spectator. */
+  async setRole(role: ParticipantRole): Promise<void> {
+    const room = this.room();
+    const uid = this._uid();
+    if (!room || !uid) {
+      return;
+    }
+    await updateDoc(doc(db, 'rooms', room.id, 'participants', uid), { role });
+  }
+
+  /** Facilitator only: switch decks by opening a fresh round (never invalidates cast votes). */
+  async changeDeck(deck: Deck): Promise<void> {
+    const room = this.room();
+    if (!room || !this.isFacilitator()) {
+      return;
+    }
+    const newRoundId = nanoid(10);
+    await setDoc(doc(db, 'rooms', room.id, 'rounds', newRoundId), {
+      createdAt: serverTimestamp(),
+      story: this.round()?.story ?? { title: '', description: '' },
+      deck,
+      status: 'voting',
+    });
+    await updateDoc(doc(db, 'rooms', room.id), { currentRoundId: newRoundId, deck });
+  }
+
+  /** Facilitator only: start a countdown of `seconds` on the current round. */
+  async startTimer(seconds: number): Promise<void> {
+    const room = this.room();
+    const round = this.round();
+    if (!room || !round || !this.isFacilitator()) {
+      return;
+    }
+    await updateDoc(doc(db, 'rooms', room.id, 'rounds', round.id), {
+      timerEndsAt: Timestamp.fromMillis(Date.now() + seconds * 1000),
+    });
   }
 
   /** Stop all subscriptions (e.g. when leaving a room). */

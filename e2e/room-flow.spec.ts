@@ -49,3 +49,12 @@ test('two players vote and the facilitator reveals results in real time', async 
   await fac.context.close();
   await voterContext.close();
 });
+
+test('spectating hides the voting cards', async ({ browser }) => {
+  const fac = await createRoom(browser, 'Alice');
+  await expect(fac.page.getByRole('button', { name: '5', exact: true })).toBeVisible();
+  await fac.page.getByRole('button', { name: 'Spectate' }).click();
+  await expect(fac.page.getByText('spectating')).toBeVisible();
+  await expect(fac.page.getByRole('button', { name: '5', exact: true })).toHaveCount(0);
+  await fac.context.close();
+});

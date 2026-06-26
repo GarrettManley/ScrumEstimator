@@ -1,9 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ParticipantView, RoomStore } from '../../core/room/room-store';
 import { Round } from '../../core/room/models';
+import { roundsToCsv } from '../../core/room/csv';
+import { DeckType, presetDeck } from '../../core/domain/deck';
 import { AiKeyStore } from '../../core/ai/key-store';
 import { AiError, suggestEstimate } from '../../core/ai/claude';
 
@@ -43,6 +45,20 @@ export class Room {
     return results ? Object.entries(results.distribution) : [];
   });
 
+  // Timer: a 1s ticker drives the countdown.
+  readonly now = signal(Date.now());
+  readonly remaining = computed(() => {
+    const ends = this.store.round()?.timerEndsAt?.toMillis?.();
+    if (ends === undefined) {
+      return null;
+    }
+    return Math.max(0, Math.ceil((ends - this.now()) / 1000));
+  });
+  readonly maxCount = computed(() => {
+    const counts = this.distribution().map(([, count]) => count);
+    return counts.length ? Math.max(...counts) : 0;
+  });
+
   constructor() {
     effect(() => {
       const round = this.store.round();
@@ -53,6 +69,9 @@ export class Room {
         this.aiError.set(null);
       }
     });
+
+    const ticker = setInterval(() => this.now.set(Date.now()), 1000);
+    inject(DestroyRef).onDestroy(() => clearInterval(ticker));
   }
 
   async join(): Promise<void> {
@@ -115,6 +134,40 @@ export class Room {
 
   isMe(p: ParticipantView): boolean {
     return p.uid === this.store.uid();
+  }
+
+  startTimer(seconds: number): void {
+    void this.store.startTimer(seconds);
+  }
+
+  toggleSpectator(): void {
+    void this.store.setRole(this.store.isSpectator() ? 'voter' : 'spectator');
+  }
+
+  switchDeck(type: string): void {
+    if (type === 'fib' || type === 'pow2' || type === 'tshirt') {
+      void this.store.changeDeck(presetDeck(type as Exclude<DeckType, 'custom'>));
+    }
+  }
+
+  barWidth(count: number): string {
+    const max = this.maxCount();
+    return max ? `${(count / max) * 100}%` : '0%';
+  }
+
+  exportCsv(): void {
+    const current = this.store.round();
+    const rounds = current?.results ? [current, ...this.store.history()] : this.store.history();
+    if (!rounds.length) {
+      return;
+    }
+    const blob = new Blob([roundsToCsv(rounds)], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'scrum-estimator-results.csv';
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   /** One-line outcome summary for a past round in the history list. */

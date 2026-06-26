@@ -37,6 +37,8 @@ export interface Round {
   story: Story;
   deck: Deck;
   status: RoundStatus;
+  /** When set, a countdown ends here; expiry is render-only (no auto-reveal). */
+  timerEndsAt?: Timestamp;
   revealedAt?: Timestamp;
   finalEstimate?: string;
   /** Advisory, facilitator-requested AI estimate (never auto-cast). */

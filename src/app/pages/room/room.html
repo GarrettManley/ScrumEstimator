@@ -27,6 +27,9 @@
       <span class="label">Share link</span>
       <code class="link">{{ shareUrl() }}</code>
       <button class="ghost" (click)="copyLink()">{{ copied() ? 'Copied!' : 'Copy' }}</button>
+      <button class="ghost" (click)="toggleSpectator()">
+        {{ store.isSpectator() ? 'Become voter' : 'Spectate' }}
+      </button>
     </div>
 
     <div class="layout">
@@ -118,19 +121,46 @@
             </div>
           }
 
+          @if (store.isFacilitator()) {
+            <div class="facilitator-tools">
+              <label>
+                Deck:
+                <select (change)="switchDeck($any($event.target).value)">
+                  <option value="fib" [selected]="store.deck().type === 'fib'">Fibonacci</option>
+                  <option value="pow2" [selected]="store.deck().type === 'pow2'">Powers of 2</option>
+                  <option value="tshirt" [selected]="store.deck().type === 'tshirt'">T-shirt</option>
+                  @if (store.deck().type === 'custom') {
+                    <option value="custom" selected>Custom</option>
+                  }
+                </select>
+              </label>
+              <button class="ghost" (click)="startTimer(60)">Start 60s timer</button>
+            </div>
+          }
+
+          @if (remaining() !== null) {
+            <p class="timer" [class.expired]="remaining() === 0">
+              {{ remaining() === 0 ? "⏱ Time's up" : '⏱ ' + remaining() + 's left' }}
+            </p>
+          }
+
           <h2>Pick your card</h2>
-          <div class="cards">
-            @for (value of store.deck().values; track value) {
-              <button
-                class="card"
-                [class.selected]="value === store.ownVote()"
-                (click)="vote(value)"
-                [attr.aria-pressed]="value === store.ownVote()"
-              >
-                {{ value }}
-              </button>
-            }
-          </div>
+          @if (store.isSpectator()) {
+            <p class="muted">You’re spectating — you won’t cast a vote this round.</p>
+          } @else {
+            <div class="cards">
+              @for (value of store.deck().values; track value) {
+                <button
+                  class="card"
+                  [class.selected]="value === store.ownVote()"
+                  (click)="vote(value)"
+                  [attr.aria-pressed]="value === store.ownVote()"
+                >
+                  {{ value }}
+                </button>
+              }
+            </div>
+          }
           @if (store.isFacilitator()) {
             <button class="primary" (click)="reveal()">Reveal votes</button>
           } @else {
@@ -144,6 +174,7 @@
                 @for (entry of distribution(); track entry[0]) {
                   <div class="bar-row">
                     <span class="bar-label">{{ entry[0] }}</span>
+                    <span class="bar"><span class="bar-fill" [style.width]="barWidth(entry[1])"></span></span>
                     <span class="bar-count">{{ entry[1] }}</span>
                   </div>
                 }
@@ -169,7 +200,10 @@
 
     @if (store.history().length) {
       <section class="history">
-        <h2>History</h2>
+        <div class="history-head">
+          <h2>History</h2>
+          <button class="ghost" (click)="exportCsv()">Export CSV</button>
+        </div>
         <ul>
           @for (r of store.history(); track r.id) {
             <li>
