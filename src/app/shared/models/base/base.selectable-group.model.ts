@@ -7,11 +7,7 @@ export class SelectableGroup {
 
   public selectedItem?: ISelectable;
 
-  constructor(
-    group?: ISelectable[],
-    title = 'SelectableGroup Title',
-    selectedItemID?: string,
-  ) {
+  constructor(group?: ISelectable[], title = 'SelectableGroup Title', selectedItemID?: string) {
     this.title = title;
     this.group = group;
     this.setSelected(selectedItemID);
