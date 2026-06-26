@@ -38,6 +38,8 @@ export interface Round {
   status: RoundStatus;
   revealedAt?: Timestamp;
   finalEstimate?: string;
+  /** Advisory, facilitator-requested AI estimate (never auto-cast). */
+  aiSuggestion?: { points: string; rationale: string };
   /** Aggregated by the facilitator at reveal, so other clients never list raw votes. */
   results?: RoundResults;
 }

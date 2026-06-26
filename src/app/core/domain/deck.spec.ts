@@ -1,4 +1,11 @@
-import { classifyDeck, customDeck, isNumericValue, isSpecialValue, presetDeck } from './deck';
+import {
+  classifyDeck,
+  customDeck,
+  isNumericValue,
+  isSpecialValue,
+  presetDeck,
+  snapToDeck,
+} from './deck';
 
 describe('deck values', () => {
   it('treats ? and coffee as special (non-estimate) values', () => {
@@ -48,5 +55,28 @@ describe('classifyDeck', () => {
 describe('customDeck', () => {
   it('trims blanks and de-duplicates while preserving order', () => {
     expect(customDeck([' 1 ', '2', '2', '', '3']).values).toEqual(['1', '2', '3']);
+  });
+});
+
+describe('snapToDeck', () => {
+  const fib = presetDeck('fib');
+  const tshirt = presetDeck('tshirt');
+
+  it('passes through an exact deck value', () => {
+    expect(snapToDeck('8', fib)).toBe('8');
+    expect(snapToDeck('M', tshirt)).toBe('M');
+  });
+
+  it('snaps an off-deck numeric value to the nearest deck value', () => {
+    expect(snapToDeck('7', fib)).toBe('8'); // 7 is closer to 8 than 5
+    expect(snapToDeck('4', fib)).toBe('3'); // equidistant 3 vs 5 — first-best (3) wins
+  });
+
+  it('rejects a non-numeric value that is not in the deck', () => {
+    expect(snapToDeck('Medium', tshirt)).toBeNull();
+  });
+
+  it('rejects a numeric value for a non-numeric deck', () => {
+    expect(snapToDeck('5', tshirt)).toBeNull();
   });
 });

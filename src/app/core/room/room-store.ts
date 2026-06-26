@@ -14,7 +14,8 @@ import { nanoid } from 'nanoid';
 import { auth, db } from '../firebase/firebase';
 import { computeResults } from '../domain/consensus';
 import { DeckType, presetDeck } from '../domain/deck';
-import { Participant, ParticipantRole, Room, Round, RoundStatus, Vote } from './models';
+import { Participant, ParticipantRole, Room, Round, RoundStatus, Story, Vote } from './models';
+import { AiSuggestion } from '../ai/claude';
 
 type WithId<T> = T & { id: string };
 export type ParticipantView = Participant & { uid: string };
@@ -109,7 +110,11 @@ export class RoomStore {
     this.watch(roomId);
   }
 
-  private async upsertSelf(roomId: string, displayName: string, role: ParticipantRole): Promise<void> {
+  private async upsertSelf(
+    roomId: string,
+    displayName: string,
+    role: ParticipantRole,
+  ): Promise<void> {
     const uid = this.requireUid();
     await setDoc(
       doc(db, 'rooms', roomId, 'participants', uid),
@@ -166,6 +171,26 @@ export class RoomStore {
     await updateDoc(doc(db, 'rooms', room.id), { currentRoundId: newRoundId });
   }
 
+  /** Facilitator only: set the current round's story. */
+  async setStory(story: Story): Promise<void> {
+    const room = this.room();
+    const round = this.round();
+    if (!room || !round || !this.isFacilitator()) {
+      return;
+    }
+    await updateDoc(doc(db, 'rooms', room.id, 'rounds', round.id), { story });
+  }
+
+  /** Facilitator only: attach an advisory AI suggestion to the current round. */
+  async applyAiSuggestion(suggestion: AiSuggestion): Promise<void> {
+    const room = this.room();
+    const round = this.round();
+    if (!room || !round || !this.isFacilitator()) {
+      return;
+    }
+    await updateDoc(doc(db, 'rooms', room.id, 'rounds', round.id), { aiSuggestion: suggestion });
+  }
+
   /** Stop all subscriptions (e.g. when leaving a room). */
   leave(): void {
     this.teardown();
@@ -198,9 +223,7 @@ export class RoomStore {
 
     this.roomSubs.push(
       onSnapshot(collection(db, 'rooms', roomId, 'participants'), (snap) => {
-        this.participants.set(
-          snap.docs.map((d) => ({ uid: d.id, ...(d.data() as Participant) })),
-        );
+        this.participants.set(snap.docs.map((d) => ({ uid: d.id, ...(d.data() as Participant) })));
       }),
     );
 

@@ -46,6 +46,28 @@ export function presetDeck(type: Exclude<DeckType, 'custom'>): Deck {
   return { type, values: [...DECK_PRESETS[type]] };
 }
 
+/**
+ * Map an arbitrary value onto the deck: exact matches pass through; for numeric
+ * decks a numeric value snaps to the nearest deck value; anything else (e.g. a
+ * non-numeric value not in the deck) is rejected with `null`.
+ */
+export function snapToDeck(value: string, deck: Deck): string | null {
+  if (deck.values.includes(value)) {
+    return value;
+  }
+  if (isNumericDeck(deck) && isNumericValue(value)) {
+    const target = Number(value);
+    const numericValues = deck.values.filter(isNumericValue);
+    if (numericValues.length === 0) {
+      return null;
+    }
+    return numericValues.reduce((best, v) =>
+      Math.abs(Number(v) - target) < Math.abs(Number(best) - target) ? v : best,
+    );
+  }
+  return null;
+}
+
 /** Build a custom deck from raw values, trimming blanks and de-duplicating while preserving order. */
 export function customDeck(values: string[]): Deck {
   const cleaned: string[] = [];

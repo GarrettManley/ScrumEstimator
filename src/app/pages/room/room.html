@@ -45,7 +45,79 @@
       </aside>
 
       <main class="table">
+        <!-- Story: facilitator edits; everyone else sees it -->
+        @if (store.isFacilitator()) {
+          <div class="story-edit">
+            <input
+              class="story-title"
+              placeholder="Story title"
+              [ngModel]="storyTitle()"
+              (ngModelChange)="storyTitle.set($event)"
+              (blur)="saveStory()"
+              aria-label="Story title"
+            />
+            <textarea
+              class="story-desc"
+              placeholder="Description (optional)"
+              [ngModel]="storyDesc()"
+              (ngModelChange)="storyDesc.set($event)"
+              (blur)="saveStory()"
+              aria-label="Story description"
+            ></textarea>
+          </div>
+        } @else if (store.round()?.story?.title) {
+          <div class="story">
+            <h3>{{ store.round()?.story?.title }}</h3>
+            @if (store.round()?.story?.description) {
+              <p>{{ store.round()?.story?.description }}</p>
+            }
+          </div>
+        }
+
+        <!-- Advisory AI suggestion; everyone sees it once set -->
+        @if (store.round()?.aiSuggestion; as ai) {
+          <div class="ai-suggestion">
+            🤖 Claude suggests <strong>{{ ai.points }}</strong> — {{ ai.rationale }}
+          </div>
+        }
+
         @if (!store.revealed()) {
+          @if (store.isFacilitator()) {
+            <div class="ai-panel">
+              @if (keys.hasKey()) {
+                <button class="ghost" (click)="suggest()" [disabled]="suggesting()">
+                  {{ suggesting() ? 'Asking Claude…' : 'Suggest estimate (AI)' }}
+                </button>
+                <button class="link-btn" (click)="keys.clear()">Forget key</button>
+              } @else {
+                <details class="key-entry">
+                  <summary>Use AI estimation (bring your own key)</summary>
+                  <input
+                    type="password"
+                    placeholder="Anthropic API key — stays in your browser"
+                    [ngModel]="keyInput()"
+                    (ngModelChange)="keyInput.set($event)"
+                    aria-label="Anthropic API key"
+                  />
+                  <label class="remember">
+                    <input
+                      type="checkbox"
+                      [ngModel]="remember()"
+                      (ngModelChange)="remember.set($event)"
+                    />
+                    Remember on this device
+                  </label>
+                  <button class="ghost" (click)="saveKey()" [disabled]="!keyInput().trim()">
+                    Save key
+                  </button>
+                </details>
+              }
+              @if (aiError()) {
+                <p class="error">{{ aiError() }}</p>
+              }
+            </div>
+          }
+
           <h2>Pick your card</h2>
           <div class="cards">
             @for (value of store.deck().values; track value) {

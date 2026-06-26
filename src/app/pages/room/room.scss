@@ -189,4 +189,95 @@ h2 {
   background: transparent;
   color: $color-primary;
   cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.story-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  input,
+  textarea {
+    padding: 0.6rem;
+    border: 1px solid $color-secondary-hover;
+    border-radius: $dimen-card-corner;
+    color: $color-black;
+    font-size: $font-size-normal;
+  }
+
+  textarea {
+    min-height: 3rem;
+    resize: vertical;
+  }
+}
+
+.story {
+  margin-bottom: 1rem;
+  color: $color-secondary;
+
+  h3 {
+    color: $color-secondary;
+    font-size: $font-size-normal;
+  }
+}
+
+.ai-suggestion {
+  margin-bottom: 1rem;
+  padding: 0.6rem 0.8rem;
+  background: $color-white;
+  border-left: 3px solid $color-primary;
+  border-radius: $dimen-card-corner;
+  color: $color-secondary;
+}
+
+.ai-panel {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+
+  .key-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    summary {
+      cursor: pointer;
+      color: $color-primary;
+    }
+
+    input[type='password'] {
+      padding: 0.5rem;
+      border: 1px solid $color-secondary-hover;
+      border-radius: $dimen-card-corner;
+      color: $color-black;
+      min-width: 18rem;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: $color-secondary;
+    }
+  }
+
+  .error {
+    color: #c0392b;
+  }
+
+  .link-btn {
+    border: none;
+    background: none;
+    color: $color-secondary;
+    text-decoration: underline;
+    cursor: pointer;
+  }
 }
