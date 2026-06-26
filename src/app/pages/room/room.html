@@ -1,0 +1,98 @@
+@if (store.roomNotFound()) {
+  <section class="notice">
+    <h1>Room not found</h1>
+    <p>That room doesn’t exist or has expired. <a routerLink="/">Create a new one</a>.</p>
+  </section>
+} @else if (needsJoin()) {
+  <section class="join">
+    <h1>Join room</h1>
+    <label class="field">
+      <span>Your name</span>
+      <input
+        [ngModel]="joinName()"
+        (ngModelChange)="joinName.set($event)"
+        (keyup.enter)="join()"
+        placeholder="e.g. Garrett"
+        autocomplete="off"
+        aria-label="Your name"
+      />
+    </label>
+    <button class="primary" (click)="join()" [disabled]="joining() || !joinName().trim()">
+      {{ joining() ? 'Joining…' : 'Join' }}
+    </button>
+  </section>
+} @else {
+  <section class="room">
+    <div class="room-bar">
+      <span class="label">Share link</span>
+      <code class="link">{{ shareUrl() }}</code>
+      <button class="ghost" (click)="copyLink()">{{ copied() ? 'Copied!' : 'Copy' }}</button>
+    </div>
+
+    <div class="layout">
+      <aside class="roster">
+        <h2>Players ({{ store.participants().length }})</h2>
+        <ul>
+          @for (p of store.participants(); track p.uid) {
+            <li [class.away]="store.isAway(p)">
+              <span class="dot" [class.voted]="store.hasVotedThisRound(p)" aria-hidden="true"></span>
+              <span class="who">{{ p.displayName }}@if (isMe(p)) { <em> (you)</em> }</span>
+            </li>
+          } @empty {
+            <li class="muted">No one here yet.</li>
+          }
+        </ul>
+      </aside>
+
+      <main class="table">
+        @if (!store.revealed()) {
+          <h2>Pick your card</h2>
+          <div class="cards">
+            @for (value of store.deck().values; track value) {
+              <button
+                class="card"
+                [class.selected]="value === store.ownVote()"
+                (click)="vote(value)"
+                [attr.aria-pressed]="value === store.ownVote()"
+              >
+                {{ value }}
+              </button>
+            }
+          </div>
+          @if (store.isFacilitator()) {
+            <button class="primary" (click)="reveal()">Reveal votes</button>
+          } @else {
+            <p class="muted">Waiting for the facilitator to reveal…</p>
+          }
+        } @else {
+          <h2>Results</h2>
+          @if (store.round()?.results; as r) {
+            <div class="results">
+              <div class="dist">
+                @for (entry of distribution(); track entry[0]) {
+                  <div class="bar-row">
+                    <span class="bar-label">{{ entry[0] }}</span>
+                    <span class="bar-count">{{ entry[1] }}</span>
+                  </div>
+                }
+              </div>
+              <ul class="summary">
+                <li>Votes cast: {{ r.voterCount }}</li>
+                @if (r.mean !== undefined) {
+                  <li>Average: {{ r.mean | number: '1.0-2' }}</li>
+                }
+                <li>Most common: {{ r.mode.length ? r.mode.join(', ') : '—' }}</li>
+                <li [class.consensus]="r.consensus">
+                  {{ r.consensus ? 'Consensus reached 🎉' : 'No consensus yet' }}
+                </li>
+              </ul>
+            </div>
+          }
+          @if (store.isFacilitator()) {
+            <button class="primary" (click)="reset()">New round</button>
+          }
+        }
+      </main>
+    </div>
+  </section>
+}

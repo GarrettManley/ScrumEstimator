@@ -1,0 +1,20 @@
+<section class="home">
+  <h1>Planning Poker</h1>
+  <p>Create a room, then share the link with your team. No sign-up needed.</p>
+
+  <label class="field">
+    <span>Your name</span>
+    <input
+      [ngModel]="name()"
+      (ngModelChange)="name.set($event)"
+      (keyup.enter)="create()"
+      placeholder="e.g. Garrett"
+      autocomplete="off"
+      aria-label="Your name"
+    />
+  </label>
+
+  <button class="primary" (click)="create()" [disabled]="creating() || !name().trim()">
+    {{ creating() ? 'Creating…' : 'Create room' }}
+  </button>
+</section>

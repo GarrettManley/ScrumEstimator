@@ -1,0 +1,192 @@
+@use '../../../styles/design' as *;
+
+h1,
+h2 {
+  color: $color-secondary;
+}
+
+.notice,
+.join {
+  max-width: 28rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  span {
+    color: $color-secondary;
+  }
+
+  input {
+    padding: 0.75rem;
+    border: 1px solid $color-secondary-hover;
+    border-radius: $dimen-card-corner;
+    font-size: $font-size-normal;
+    color: $color-black;
+  }
+}
+
+.room-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+
+  .label {
+    color: $color-secondary;
+  }
+
+  .link {
+    padding: 0.4rem 0.6rem;
+    background: $color-white;
+    border-radius: $dimen-card-corner;
+    color: $color-secondary;
+  }
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 14rem 1fr;
+  gap: 2rem;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.roster {
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $color-secondary;
+
+    &.away {
+      opacity: 0.45;
+    }
+  }
+
+  .dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: $color-secondary-hover;
+
+    &.voted {
+      background: $color-primary;
+    }
+  }
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.card {
+  width: 3.5rem;
+  height: 5rem;
+  border: 2px solid $color-primary;
+  border-radius: $dimen-card-corner;
+  background: $color-white;
+  color: $color-primary;
+  font-size: $font-size-normal;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  @include shadow;
+
+  &:hover {
+    transform: translateY(-0.25rem);
+  }
+
+  &.selected {
+    background: $color-primary;
+    color: $color-white;
+    transform: translateY(-0.25rem);
+  }
+}
+
+.results {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin: 1rem 0 1.5rem;
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: $color-secondary;
+}
+
+.bar-label {
+  display: inline-block;
+  min-width: 2.5rem;
+  font-size: $font-size-normal;
+}
+
+.summary {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: $color-secondary;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  .consensus {
+    color: $color-primary;
+  }
+}
+
+.muted {
+  color: $color-secondary-hover;
+}
+
+.primary {
+  align-self: flex-start;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: $dimen-card-corner;
+  background: $color-primary;
+  color: $color-white;
+  font-size: $font-size-normal;
+  cursor: pointer;
+  @include shadow;
+
+  &:hover:not(:disabled) {
+    background: $color-primary-hover;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.ghost {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid $color-primary;
+  border-radius: $dimen-card-corner;
+  background: transparent;
+  color: $color-primary;
+  cursor: pointer;
+}

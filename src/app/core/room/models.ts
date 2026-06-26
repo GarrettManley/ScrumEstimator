@@ -1,5 +1,6 @@
 import { Timestamp } from 'firebase/firestore';
 import { Deck } from '../domain/deck';
+import { RoundResults } from '../domain/consensus';
 
 export type RoundStatus = 'voting' | 'revealed';
 export type ParticipantRole = 'voter' | 'spectator';
@@ -17,13 +18,17 @@ export interface Room {
   currentRoundId: string;
 }
 
-/** `/rooms/{roomId}/participants/{uid}` */
+/**
+ * `/rooms/{roomId}/participants/{uid}`
+ * `votedRoundId` records which round the player last voted in, so "has voted this
+ * round" is `votedRoundId === room.currentRoundId` — no cross-user reset on a new round.
+ */
 export interface Participant {
   displayName: string;
   role: ParticipantRole;
   joinedAt: Timestamp;
   lastSeen: Timestamp;
-  hasVoted: boolean;
+  votedRoundId?: string;
 }
 
 /** `/rooms/{roomId}/rounds/{roundId}` — status is authoritative here, not on the room. */
@@ -33,9 +38,8 @@ export interface Round {
   status: RoundStatus;
   revealedAt?: Timestamp;
   finalEstimate?: string;
-  /** Aggregated by the facilitator at reveal (so other clients never list raw votes). */
-  results?: Record<string, number>;
-  average?: number;
+  /** Aggregated by the facilitator at reveal, so other clients never list raw votes. */
+  results?: RoundResults;
 }
 
 /** `/rooms/{roomId}/rounds/{roundId}/votes/{uid}` */
